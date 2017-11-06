@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+         http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+<!-- Created by igraph -->
+  <key id="g_name" for="graph" attr.name="name" attr.type="string"/>
+  <key id="g_target_makespan" for="graph" attr.name="target_makespan" attr.type="string"/>
+  <key id="v_taskid" for="node" attr.name="taskid" attr.type="string"/>
+  <key id="v_taskname" for="node" attr.name="taskname" attr.type="string"/>
+  <key id="v_workload" for="node" attr.name="workload" attr.type="double"/>
+  <key id="v_max_width" for="node" attr.name="max_width" attr.type="double"/>
+  <key id="v_efficiency" for="node" attr.name="efficiency" attr.type="string"/>
+  <graph id="G" edgedefault="directed">
+    <data key="g_name">Generated_from_algebra</data>
+    <data key="g_target_makespan">class:fft</data>
+    <node id="n0">
+      <data key="v_taskid">task_1_id</data>
+      <data key="v_taskname">task_1_name</data>
+      <data key="v_workload">8</data>
+      <data key="v_max_width">8</data>
+      <data key="v_efficiency">1 0.98125 0.957812 0.925 0.882812 0.83125 0.770312 0.7 </data>
+    </node>
+    <node id="n1">
+      <data key="v_taskid">task_2_id</data>
+      <data key="v_taskname">task_2_name</data>
+      <data key="v_workload">4</data>
+      <data key="v_max_width">4</data>
+      <data key="v_efficiency">1 0.925 0.83125 0.7 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n2">
+      <data key="v_taskid">task_3_id</data>
+      <data key="v_taskname">task_3_name</data>
+      <data key="v_workload">4</data>
+      <data key="v_max_width">4</data>
+      <data key="v_efficiency">1 0.925 0.83125 0.7 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n3">
+      <data key="v_taskid">task_4_id</data>
+      <data key="v_taskname">task_4_name</data>
+      <data key="v_workload">2</data>
+      <data key="v_max_width">2</data>
+      <data key="v_efficiency">1 0.7 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n4">
+      <data key="v_taskid">task_5_id</data>
+      <data key="v_taskname">task_5_name</data>
+      <data key="v_workload">2</data>
+      <data key="v_max_width">2</data>
+      <data key="v_efficiency">1 0.7 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n5">
+      <data key="v_taskid">task_6_id</data>
+      <data key="v_taskname">task_6_name</data>
+      <data key="v_workload">2</data>
+      <data key="v_max_width">2</data>
+      <data key="v_efficiency">1 0.7 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n6">
+      <data key="v_taskid">task_7_id</data>
+      <data key="v_taskname">task_7_name</data>
+      <data key="v_workload">2</data>
+      <data key="v_max_width">2</data>
+      <data key="v_efficiency">1 0.7 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n7">
+      <data key="v_taskid">task_8_id</data>
+      <data key="v_taskname">task_8_name</data>
+      <data key="v_workload">1</data>
+      <data key="v_max_width">1</data>
+      <data key="v_efficiency">1 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n8">
+      <data key="v_taskid">task_9_id</data>
+      <data key="v_taskname">task_9_name</data>
+      <data key="v_workload">1</data>
+      <data key="v_max_width">1</data>
+      <data key="v_efficiency">1 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n9">
+      <data key="v_taskid">task__10_id</data>
+      <data key="v_taskname">task__10_name</data>
+      <data key="v_workload">1</data>
+      <data key="v_max_width">1</data>
+      <data key="v_efficiency">1 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n10">
+      <data key="v_taskid">task__11_id</data>
+      <data key="v_taskname">task__11_name</data>
+      <data key="v_workload">1</data>
+      <data key="v_max_width">1</data>
+      <data key="v_efficiency">1 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n11">
+      <data key="v_taskid">task__12_id</data>
+      <data key="v_taskname">task__12_name</data>
+      <data key="v_workload">1</data>
+      <data key="v_max_width">1</data>
+      <data key="v_efficiency">1 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n12">
+      <data key="v_taskid">task__13_id</data>
+      <data key="v_taskname">task__13_name</data>
+      <data key="v_workload">1</data>
+      <data key="v_max_width">1</data>
+      <data key="v_efficiency">1 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n13">
+      <data key="v_taskid">task__14_id</data>
+      <data key="v_taskname">task__14_name</data>
+      <data key="v_workload">1</data>
+      <data key="v_max_width">1</data>
+      <data key="v_efficiency">1 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+    <node id="n14">
+      <data key="v_taskid">task__15_id</data>
+      <data key="v_taskname">task__15_name</data>
+      <data key="v_workload">1</data>
+      <data key="v_max_width">1</data>
+      <data key="v_efficiency">1 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 </data>
+    </node>
+  </graph>
+</graphml>

@@ -1,0 +1,257 @@
+#!/bin/bash
+
+usage()
+{
+	echo
+	echo "$0" '( --help ) || ( --taskgraph <taskgraph> --platform <platform> --schedule-output <schedule> )'
+	echo
+	echo "	--help			Displays this help"
+	echo "	--taskgraph		Specify the taskgraph description file"
+	echo "	--platform		Specify the platform description file"
+	echo "	--schedule-output	Speficy the output schedule file"
+	echo "	<taskgraph>		Relative or absolute path to a taskgraph description file in graphml format"
+	echo "	<platform>		Relative or absolute path to a platform description file in AMPL input format"
+	echo "	<schedule>		Relative or absolute path to the schedule file to be generated in XML"
+	echo
+	echo
+}
+
+parse_arguments()
+{
+	while [ "$1" != "" ]
+	do
+		case "$1" in
+			"--taskgraph")
+				shift
+				taskgraph="$1"
+			;;
+			"--platform")
+				shift
+				platform="$1"
+			;;
+			"--help")
+				usage
+				exit 0
+			;;
+			"--taskgraph-output")
+				shift
+				output_taskgraph=$1
+			;;
+			"--schedule-output")
+				shift
+				output_schedule=$1
+			;;
+			"--taskgraph-solution")
+				shift
+				solution_taskgraph=$1
+			;;
+			"--schedule-solution")
+				shift
+				solution_schedule=$1
+			;;
+			"--output-solution")
+				shift
+				solution_output=$1
+			;;
+			"--scheduler")
+				shift
+				scheduler=$1
+			;;
+			"--description")
+				label=1
+			;;
+			"--sources")
+				sources=1
+			;;
+			"--src")
+				shift
+				src="$1"
+			;;
+			"--options")
+				shift
+				while [ "$1" != "--" ] && [ "$1" != "" ]
+				do
+					options="$options $1"
+					shift
+				done
+			;;
+			*)
+				echo "Unknown option: \"$1\". Skipping" >&2
+			;;
+		esac
+
+		## Next argument
+		shift
+	done
+}
+
+targz_project()
+{
+	local file="$1"
+	tar -f $file -x ./src/Makefile.in --to-stdout | grep drake_package | cut -f 2 -d = | xargs echo | cut -f 1 -d ' '
+}
+
+targz_graph_file()
+{
+	local file="$1"
+	echo -n './src/'
+	tar -f $file -x ./src/Makefile.in --to-stdout | grep -E '^drake(cc|cxx)_'`targz_project "$file"`'_graph\s*=\s*' | perl -pe 's/\s+#.*$//g' | cut -f 2 -d = | xargs echo | grep -v ^$
+}
+
+print_taskgraph()
+{
+	local file="$1"
+	if [ "$(echo $file | grep .graphml$)" == "" ]
+	then
+		tar -f $file -x `targz_graph_file "$file"` --to-stdout
+	else
+		cat $file
+	fi
+}
+
+here()
+{
+	echo $(dirname `realpath $0`)
+}
+
+cleanup()
+{
+	rm -rf $writable
+}
+
+make_args()
+{
+	arg=$1
+	eval arg_val=\"'$'$arg\"
+	if [ "$arg_val" != "" ]
+	then
+		echo --$arg $arg_value
+	fi
+}
+
+make_label()
+{
+	local label="`for i in $@
+	do
+		local var=$i
+		local val=$(eval echo '$'$i)
+		if [ "$val" != "" ]
+		then
+			if [ "$val" -eq "$val" ]
+			then
+				echo ${var:0:2}=$(LC_NUMERIC="en_US.UTF-8" printf "%.2f\n" $val)
+			else
+				echo ${var:0:2}=$val
+			fi
+		fi
+	done`"
+	if [ "$label" != "" ]
+	then
+		echo "Crown.($label)"
+	else
+		echo "Crown."
+	fi
+}
+
+eval parse_arguments `for i in "$@"; do printf "\"%s\" " "$(echo $i|sed 's/"/\\\"/g')"; done; echo`
+
+## Fill with default values
+if [ "$output_schedule" == "" ]
+then
+	output_schedule=/tmp/`eval pelib-convert --process --lib schedule --args --lib $scheduler --description --args $options -- -- `.schedule
+fi
+if [ "$output_taskgraph" == "" ]
+then
+	output_taskgraph=/tmp/`eval pelib-convert --process --lib schedule --args --lib $scheduler --description --args $options -- -- `.graphml
+fi
+
+if [ "$scheduler" == "" ]
+then
+	echo No scheduler specified. use --scheduler flag. >&2
+	exit 1
+fi
+
+# Default values
+args="`make_args alpha` `make_args zeta` `make_args eta` `make_args kappa` `make_args config`"
+if [ "$label" == "" ] && [ "$sources" == "" ]
+then
+	writable=/tmp/crown-$$
+	trap cleanup EXIT
+	mkdir $writable
+	statistics=$writable/statistics.out
+	raw_output=`dirname $output_schedule`/`eval pelib-convert --process --lib schedule --args --lib $scheduler --description --args $options -- -- `.raw
+	tmp_schedule=$writable/schedule.xml
+	## Check if we can actually create the desired raw output file
+	if ! touch "$raw_output"
+	then
+		raw_output=/tmp/`basename $0`.raw
+	fi >/dev/null 2>&1
+
+	if [ -f "$solution_schedule" ] && [ -f "$solution_taskgraph" ];
+	then
+		first_output_taskgraph=$solution_taskgraph #`echo $output_taskgraph | sed 's/\/schedule_'"$schedule_try"'\//\/schedule_1\//g'`
+		first_output_schedule=$solution_schedule #`echo $output_schedule | sed 's/\/schedule_'"$schedule_try"'\//\/schedule_1\//g'`
+		first_output_dir=`dirname $first_output_schedule`
+
+		if [ -f "$first_output_taskgraph" ]
+		then
+			cp $first_output_taskgraph $output_taskgraph
+		fi
+		if [ -f "$first_output_schedule" ]
+		then
+			cp $first_output_schedule $output_schedule
+		else
+			if [ -f $output_schedule ]
+			then
+				 rm $output_schedule
+			fi
+		fi
+		if [ -f $solution_output ]
+		then
+			cat $solution_output
+			success=$(cat $solution_output|grep feasible|cut -f 2 -d =|xargs echo)
+			exit 0
+		else
+			echo '[ERROR]' Cannot find solution output \"$first_output_dir/$(basename $(dirname $(realpath $0))).out\". Aborting. >&2
+			exit 1
+		fi
+	fi
+
+	## Default outputs
+	if [ "$output_taskgraph" == "" ]; then output_taskgraph=/tmp/`basename $taskgraph`; fi
+	if [ "$output_schedule" == "" ]; then output_schedule=/tmp/`basename $(here)`.schedule; fi
+
+	## Compute schedule
+	eval pelib-convert --input --lib taskgraph-graphml --file <(print_taskgraph "$taskgraph") --input --lib platform-ampl_input --file "$platform" --process --lib schedule --args --show-stats "$statistics" --lib $scheduler --args $options -- -- -- --output --lib schedule-xml --file $tmp_schedule > $raw_output 2>&1
+	status=$?
+
+	feasible=$(cat "$statistics" | grep -E "^\s*feasible\s*=" | cut -f 2 -d = | xargs echo)
+	cat $statistics
+	if [ "`echo $feasible|xargs echo`" == "1" ] && [ "$status" == "0" ]
+	then
+		## Leave output taskgraph as it is
+		cp $taskgraph $output_taskgraph
+		cp $tmp_schedule $output_schedule
+	else
+		if [ -f "$output_schedule" ]
+		then
+			rm "$output_schedule"
+		fi	
+	fi
+else
+	if [ "$label" != "" ] && [ "$sources" == "" ]
+	then
+		eval pelib-convert --process --lib schedule --args --lib $scheduler --description --args $options -- -- 
+		status=$?
+	fi
+
+	if [ "$sources" != "" ] && [ "$label" == "" ]
+	then
+		echo $src
+		pelib-convert --sources
+		status=$?
+	fi
+fi
+
+exit $status
+

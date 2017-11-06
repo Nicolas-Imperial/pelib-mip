@@ -1,0 +1,83 @@
+# Copyright 2015 Nicolas Melot
+#
+# This file is part of pelib.
+#
+# pelib is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# pelib is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with pelib. If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+## All files to include in a distribution package
+text = AlgebraData.hpp Algebra.hpp \
+Scalar.hpp Vector.hpp Matrix.hpp Set.hpp \
+AlgebraParser.hpp SOLParser.hpp AlgebraOutput.hpp \
+AlgebraDataParser.hpp AlgebraDataOutput.hpp \
+AmplDataParser.hpp AmplDataOutput.hpp \
+AmplInputData.hpp \
+AmplInputScalar.hpp AmplInputVector.hpp AmplInputMatrix.hpp AmplInputSet.hpp \
+AmplInputDataParser.hpp AmplInputDataOutput.hpp \
+AmplInput.hpp \
+AmplOutputData.hpp \
+AmplOutputScalar.hpp AmplOutputVector.hpp AmplOutputMatrix.hpp AmplOutputSet.hpp \
+AmplOutputDataParser.hpp AmplOutputDataOutput.hpp \
+AmplOutput.hpp \
+RawData.hpp \
+RawDataOutput.hpp \
+RawScalar.hpp RawVector.hpp RawMatrix.hpp RawSet.hpp \
+AlgebraRawOutput.hpp \
+CppData.hpp \
+CppScalar.hpp CppVector.hpp CppMatrix.hpp CppSet.hpp \
+CppDataOutput.hpp \
+Cpp.hpp \
+Solver.hpp \
+AlgebraSolver.hpp \
+AmplSolver.hpp \
+calculus.h \
+MixedIntegerModel.hpp \
+MixedIntegerModelParser.hpp \
+MathProgModelParser.hpp \
+CPLEXLP.hpp \
+MixedIntegerProblem.hpp \
+MIPSolver.hpp \
+MIPOutput.hpp \
+Gurobi.hpp \
+
+none = \
+Task.hpp \
+exprtk.hpp \
+DeadlineCalculator.hpp DeadlineConstant.hpp DeadlineFormula.hpp \
+Taskgraph.hpp \
+TaskgraphParser.hpp TaskgraphOutput.hpp \
+GraphMLParser.hpp GraphMLOutput.hpp \
+GraphML.hpp \
+Core.hpp \
+DummyCore.hpp \
+Platform.hpp \
+PlatformParser.hpp PlatformOutput.hpp \
+AbstractLink.hpp AllotedLink.hpp Buffer.hpp Memory.hpp ExecTask.hpp TaskSync.hpp \
+Schedule.hpp \
+ScheduleParser.hpp ScheduleOutput.hpp \
+XMLScheduleParser.hpp XMLScheduleOutput.hpp \
+XMLSchedule.hpp \
+TetrisSchedule.hpp \
+TetrisScheduleOutput.hpp \
+Scheduler.hpp \
+scheduler.h \
+generate.hpp pelib_exprtk.hpp 
+
+cstruct = array.h fifo_array.h char.h integer.h float.h pelib_string.h monitor.h sort.h structure.h complex.h fifo.h size_t.h stack.h template.h array.c fifo.c fifo_array.c stack.c malloc.h iterator.h iterator.c set.h set.c pair.h pair.c map.h map.c string.h const_string.h string_integer.h
+
+attach = $(text) $(cstruct) time.h
+
+## Further directories to follow
+subdirs = 

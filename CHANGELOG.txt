@@ -1,0 +1,15 @@
+pelib 4.0.0
+* Added new visual Schedule output class, tetris style in SVG format
+* Added unit for platform frequencies in AMPL scalar "Funit". Multiply with element in F to obtain frequency in Hertz.
+* Added new Solver class hierarchy
+* Added Ampl Algebra Solver implementation (calling existing installation of Ampl and backend solver)
+* Fixed parsing of negative numbers
+* Added argument passing to pelib-convert schedulers
+* Fixed segfault bug when using copied schedule instances
+* Added task name generation and parsing for taskgraphs
+* Added support for Sets of Sets
+* Added merge methods for AlgebraData structures
+* Added support for Voltage/Frequency islands in AMPL platform representations
+* Added edge annotation in Taskgraphs and GraphML format
+* Added set and map pelib c containers
+* Added distinction between streaming (repeating) and non-streaming (non-repeating) tasks
