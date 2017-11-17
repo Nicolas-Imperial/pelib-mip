@@ -28,7 +28,7 @@ extern "C" {
 #ifndef CROWN_H
 #define CROWN_H
 	const pelib::Algebra* pelib_calculus(const std::map<const std::string&, const pelib::Algebra> &data, size_t argc, char**argv, std::map<const std::string, double>&);
-	void pelib_delete(pelib::Algebra *data);
+	void pelib_delete_calculus(pelib::Algebra *data);
 #endif
 
 #ifdef __cplusplus

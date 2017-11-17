@@ -95,10 +95,10 @@ pelib_process(const std::map<string, pelib::Record*> &records, size_t argc, char
 }
 
 void
-pelib_delete(pelib::Record* obj)
+pelib_delete_process(pelib::Record* obj)
 {
 	void *libSolver = load_lib(library);
-	void (*del)(const Algebra*) = (void (*)(const Algebra*))load_function(libSolver, "pelib_delete");
+	void (*del)(const Algebra*) = (void (*)(const Algebra*))load_function(libSolver, "pelib_delete_calculus");
 
 	if(string(typeid(Algebra).name()).compare(typeid(*obj).name()) == 0)
 	{

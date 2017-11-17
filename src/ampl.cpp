@@ -97,7 +97,7 @@ pelib_calculus(const map<const string, const Algebra> &data, size_t argc, char**
 }
 
 void
-pelib_delete(Algebra *data)
+pelib_delete_calculus(Algebra *data)
 {
 	delete data;
 }
