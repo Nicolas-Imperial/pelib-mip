@@ -59,7 +59,7 @@ namespace pelib
 			std::string
 			getDetailedPattern()
 			{
-				return "(\\w[\\w\\d_]*)\\s*\\[\\*\\]\\s*:=\\s*((?:[-+\\w\\d][-\\w\\d_+\\.]*\\s+[-+\\w\\d][-\\w\\d_\\.+]*[\\s\\n]+)+)";
+				return "(\\w[\\w\\d_]*)\\s*\\[\\*\\]\\s*:=\\s*((?:[-+\\w\\d][-\\w\\d_+\\.]*\\s+[-+\\w\\d][-\\w\\d_\\.+]*[\\s\\n]+)*)";
 			}
 
 			/** Uses a boost::regex regular expression to match a vector written in AMPL output format **/
@@ -67,7 +67,7 @@ namespace pelib
 			std::string
 			getGlobalPattern()
 			{
-				return "\\w[\\w\\d_]*\\s*\\[\\*\\]\\s*:=.+";
+				return "\\w[\\w\\d_]*\\s*\\[\\*\\]\\s*:=.*";
 			}
 
 			/** Reads input stream in AMPL output format and builds an instance of pelib::Vector containing all values
@@ -131,7 +131,7 @@ namespace pelib
 				}
 
 				// If all values could have been parsed as integer, then this is obviously an integer vector rather to a float one
-				if(integer_values == total_values)
+				if(integer_values == total_values && is_decimal(typeid(Value)))
 				{
 					//throw NoDecimalFloatException(std::string("Vector only composed of integer-parsable values."), 0);
 					throw ParseException(std::string("Vector only composed of integer-parsable values."));

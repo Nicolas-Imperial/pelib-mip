@@ -49,7 +49,7 @@ namespace pelib
 
 			/** Parses AMPL input text from input stream and returns an instance of Algebra containing all data structure that could be parsed successfully, using parsers in the parser collection given when the class was instanciated. Parsing is performed in strict mode (See AlgebraDataParser). Any element that could not be parsed is parsed as Scalar, Vector, Matrix or Set of strings. **/
 			Algebra
-			parse(std::istream &data) const;
+			parse(std::istream &data, const std::map<std::string, const std::type_info&> &directives = {} ) const;
 
 			/** Outputs all elements in the given Algebra instance into output stream in output stream o in AmplInput format, using output classes given when the class was instanciated. Also output all string-based AlgebraData instances **/
 			virtual

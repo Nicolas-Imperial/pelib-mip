@@ -51,7 +51,7 @@ namespace pelib
 			
 			/** Reads input stream and produces a collection of pelib::AlgebraData derived class instances such as Scalar, Vector, Set and Matrix. Warning, this can be a ver slow process with large inputs **/
 			Algebra
-			parse(std::istream &data) const;
+			parse(std::istream &data, const std::map<std::string, const std::type_info&> &directives = {}) const;
 
 			/** Writes all derived instance of pelib::AlgebraData in the container to output stream in AMPL output text format **/
 			virtual

@@ -117,7 +117,7 @@ namespace pelib
 	}
 
 	Algebra
-	AmplInput::parse(std::istream &ampl_data) const 
+	AmplInput::parse(std::istream &ampl_data, const std::map<string, const std::type_info&> &directives) const 
 	{
 		Algebra record;
 		std::string line;
@@ -142,7 +142,7 @@ namespace pelib
 		// Parse input
 		while(!getline(noComment, line, ';').fail())
 		{
-			trim(line);	
+			trim(line);
 			boost::regex surrounding_space("^[\\n\\s]*([^\\s\\n].*?)[\\s\\n]*$");
 			line = boost::regex_replace(line, surrounding_space, first_only, boost::match_default | boost::format_all);
 
@@ -159,10 +159,14 @@ namespace pelib
 					std::istringstream istr(line);
 					std::istream &str = istr;
 					AlgebraData *data = parser->parse(str);
-					record.insert(data);
+					if(directives.find(data->getName()) != directives.end() &&
+						string(typeid(*data).name()).compare(string(directives.find(data->getName())->second.name())) == 0)
+					{
+						record.insert(data);
 
-					// No need to try another parser; proceed with the next token
-					break;
+						// No need to try another parser; proceed with the next token
+						break;
+					}
 				} catch (ParseException &e)
 				{
 					//std::cerr << e.what() << "Trying next parser." << std::endl;
@@ -179,10 +183,18 @@ namespace pelib
 						std::istringstream istr(line);
 						std::istream &str = istr;
 						AlgebraData *data = parser->parse(str);
-						record.insert(data);
+						if(directives.find(data->getName()) != directives.end() && string(typeid(*data).name()).compare(string(directives.find(data->getName())->second.name())) == 0)
+						{
+							record.insert(data);
+							// No need to try another parser; proceed with the next token
+							break;
+						}
+						else
+						{
+							delete data;
+						}
+						
 
-						// No need to try another parser; proceed with the next token
-						break;
 					} catch (ParseException &e)
 					{
 						//std::cerr << e.what() << "Trying next parser." << std::endl;

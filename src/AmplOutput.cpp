@@ -115,7 +115,7 @@ namespace pelib
 	}
 
 	Algebra
-	AmplOutput::parse(std::istream &ampl_data) const
+	AmplOutput::parse(std::istream &ampl_data, const std::map<std::string, const std::type_info&> &directives) const
 	{
 		Algebra record;
 		std::string line;
@@ -150,18 +150,21 @@ namespace pelib
 						//std::cerr << "Discarded =\"" << match[1] << "\"." << std::endl;
 						//std::cerr << "Token =\"" << match[2] << "\"." << std::endl;
 						AlgebraData *data = parser->parse(token);
-						record.insert(data);
+						if(directives.find(data->getName()) != directives.end() && string(typeid(*data).name()).compare(string(directives.find(data->getName())->second.name())) == 0)
+						{
+							record.insert(data);
 
-						// Keep only the part we have not parsed
-						line = match[1];
-						
-						// Feed the remaining Output line to parsers Output is more useful information are available
-	  					section.str(line);
-						section.seekp(std::ios_base::beg);
-						section.clear();
+							// Keep only the part we have not parsed
+							line = match[1];
+							
+							// Feed the remaining Output line to parsers Output is more useful information are available
+							section.str(line);
+							section.seekp(std::ios_base::beg);
+							section.clear();
 
-						// No need to try another parser; proceed with the next token in section
-						break;
+							// No need to try another parser; proceed with the next token in section
+							break;
+						}
 					} catch (ParseException &e)
 					{
 						// Try next parser
@@ -195,18 +198,21 @@ namespace pelib
 							//std::cerr << "Discarded =\"" << match[1] << "\"." << std::endl;
 							//std::cerr << "Token =\"" << match[2] << "\"." << std::endl;
 							AlgebraData *data = parser->parse(token);
-							record.insert(data);
+							if(directives.find(data->getName()) != directives.end() && string(typeid(*data).name()).compare(string(directives.find(data->getName())->second.name())) == 0)
+							{
+								record.insert(data);
 
-							// Keep only the part we have not parsed
-							line = match[1];
-							
-							// Feed the remaining Output line to parsers Output is more useful information are available
-							section.str(line);
-							section.seekp(std::ios_base::beg);
-							section.clear();
+								// Keep only the part we have not parsed
+								line = match[1];
+								
+								// Feed the remaining Output line to parsers Output is more useful information are available
+								section.str(line);
+								section.seekp(std::ios_base::beg);
+								section.clear();
 
-							// No need to try another parser; proceed with the next token in section
-							break;
+								// No need to try another parser; proceed with the next token in section
+								break;
+							}
 						} catch (ParseException &e)
 						{
 							// Try next parser

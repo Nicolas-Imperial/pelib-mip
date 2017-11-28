@@ -17,6 +17,7 @@
  along with Pelib. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <typeinfo>
 
 #include <iostream>
 #include <cstdlib>
@@ -40,7 +41,7 @@ namespace pelib
 			/** Produces an instance of Algebra from data found in input stream data. **/
 			virtual
 			Algebra
-			parse(std::istream &data) const = 0;
+			parse(std::istream &data, const std::map<std::string, const std::type_info&> &directives = {}) const = 0;
 	};
 }
 

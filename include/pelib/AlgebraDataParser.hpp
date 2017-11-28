@@ -42,7 +42,7 @@ namespace pelib
 	class AlgebraDataParser : public DataParser
 	{
 		public:
-			/** Converts a string into an instance of T and throws a ParseException upon conversion error. If T is a numeric base type (int, float and derivatives) and strict is true, then an attempt to convert a string that matches an integer value into a float or double results in throwing a NoDecimalException **/
+			/** Converts a std::string into an instance of T and throws a ParseException upon conversion error. If T is a numeric base type (int, float and derivatives) and strict is true, then an attempt to convert a std::string that matches an integer value into a float or double results in throwing a NoDecimalException **/
 			template <class Target>
 			static
 			Target
@@ -70,7 +70,102 @@ namespace pelib
 						}
 						else
 						{
-							std::istringstream converter(element);
+							Target min = std::numeric_limits<Target>::min();
+							Target max = std::numeric_limits<Target>::max();
+
+							// Break down std::string into mantissa + exponent representation
+							// If no power of 10 separator, then mantissa is whole std::string
+							// and exponent is 0
+							std::string mantissa = element, exponent = "0";
+							if(element.find("e") != std::string::npos)
+							{
+								mantissa = element.substr(0, element.find("e") - 1);
+								exponent = element.substr(element.find("e") + 1, element.length());
+							}
+							if(element.find("E") != std::string::npos)
+							{
+								mantissa = element.substr(0, element.find("E") - 1);
+								exponent = element.substr(element.find("e") + 1, element.length());
+							}
+
+							std::string integer = mantissa, decimal = std::string();
+							// Break down mantissage into integer and decimal values
+							// If integer, the integer part is the whole mantissage and
+							// the decimal part is an empty std::string.
+							if(mantissa.find(".") != std::string::npos)
+							{
+								integer = mantissa.substr(0, mantissa.find(".") - 1);
+								decimal = mantissa.substr(mantissa.find(".") + 1, mantissa.length());
+							}
+							// Remove trailing zeros from the decimal part
+							decimal.erase(decimal.find_last_not_of('0') + 1, std::string::npos);
+
+							// See if the integer part is negative and if so, subtract the minus sign
+							// from digit counting.
+							bool negative = false;
+							unsigned int power = integer.length();
+							if(integer.c_str()[0] == '-')
+							{
+								// Corner case "-0": do not count '-' as number length
+								// but do not counter number as negative either
+								if(integer.find_last_not_of('0') > 0)
+								{
+									negative = true;
+								}
+								power--;
+							}
+
+							// If the exponent is not high enough to get the whole decimal into
+							// the integer realm, then the number to parse is not an integer
+							unsigned int exponent_int = atoi(exponent.c_str());
+							if(exponent_int < decimal.length() && strict && is_decimal(typeid(out)))
+							{
+								throw ParseException(std::string("Cannot parse a decimal number into an integer variable"));
+							}
+
+							// If we carry on, there may be any decimal loss. Should be filtered out above if strict conversion
+							// is requested. From now on, the remaining decimal part is considered non-existent
+
+							// Compute the real exponent of the number and compare it to log10 of the maximal value the requeted
+							// type can hold. If the number is negative, then compare to the opposite of the negative bound.
+							power += exponent_int;
+							if(negative == false)
+							{
+								std::stringstream ss;
+								ss << max;
+								if(power > ss.str().length() && strict)
+								{
+									throw ParseException(std::string("Type \"").append(typeid(Target).name()).append("\" cannot hold value \"").append(element).append("\" with no truncation."));
+								}
+							}
+							else
+							{
+								std::stringstream ss;
+								ss << min;
+								if(power > ss.str().length() - 1 && strict)
+								{
+									throw ParseException(std::string("Type \"").append(typeid(Target).name()).append("\" cannot hold value \"").append(element).append("\" with no truncation."));
+								}
+							}
+
+							// Now, if we parse a negative number into an unsigned variable, we may want to protest
+							// This may already been triggered above since negative is true, -min = 0 (therefore log10(-min) = -inf and power >= 0
+							// An additionnal check does hurt anyway
+							// This is a trick to run min >= 0 where min is of type string due to the template 
+							bool min_higher_than_or_equal_to_zero;
+							{
+								std::stringstream ss;
+								ss << min;
+								min_higher_than_or_equal_to_zero = ss.str().c_str()[0] != '-';
+							}
+							if(negative && min_higher_than_or_equal_to_zero && strict)
+							{
+								throw ParseException(std::string("Cannot parse a negative integer into strictly positive variable type \"").append(typeid(out).name()).append("\"."));
+							}
+
+							// Now we are sure the value to convert is an integer and the type requested can handle the conversion without truncation. Proceed with conversion
+
+							std::stringstream converter(element);
 							converter >> out;
 							infinity = false;
 
@@ -90,7 +185,7 @@ namespace pelib
 				}
 				else
 				{
-					std::istringstream converter(element);
+					std::stringstream converter(element);
 					converter >> out;
 
 					if(converter.fail())
@@ -134,7 +229,7 @@ namespace pelib
 							ss << out;
 							ss >> val;
 							long long int int_test = (long long int)floor(val);
-							//std::istringstream converter(element);
+							//std::stringstream converter(element);
 							//converter >> int_test;
 
 #if TRACE
@@ -190,7 +285,7 @@ namespace pelib
 							if(!infinity)
 							{
 								double int_test;
-								std::istringstream converter(element);
+								std::stringstream converter(element);
 								converter >> int_test;
 
 								long long int val;
@@ -290,7 +385,7 @@ namespace pelib
 			std::string
 			getDetailedPattern() = 0;
 
-			/** Returns a boost regular expression that matches the string representation of an algebraic data structure **/
+			/** Returns a boost regular expression that matches the std::string representation of an algebraic data structure **/
 			virtual
 			std::string
 			getGlobalPattern() = 0;
